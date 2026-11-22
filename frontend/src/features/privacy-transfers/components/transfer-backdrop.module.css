@@ -1,4 +1,20 @@
-/* The photo keeps its 3:2 ratio at the full height of the hero, centred. */
+/*
+ * The stage is the visible area under the header, not the hero: the hero grows
+ * when the form is taller than the window (the Send tab on a laptop), and a
+ * backdrop sized to it would zoom on every tab switch. svh, not dvh, so a
+ * phone's collapsing address bar does not resize it either.
+ */
+.stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: calc(100svh - var(--header-height));
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* The photo keeps its 3:2 ratio at the full height of the stage, centred. */
 .photo {
   position: absolute;
   top: 0;

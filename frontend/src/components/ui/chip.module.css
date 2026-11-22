@@ -1,11 +1,18 @@
+/* The visible box is 26px; the ::before keeps a 44px hit area around it. */
 .chip {
+  position: relative;
   display: flex;
   align-items: center;
-  min-height: var(--control-md);
   padding: 0;
   border: 0;
   background: transparent;
   cursor: pointer;
+}
+
+.chip::before {
+  content: "";
+  position: absolute;
+  inset: -9px -6px;
 }
 
 .box {

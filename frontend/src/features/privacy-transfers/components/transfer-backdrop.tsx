@@ -14,11 +14,14 @@ import {
 } from "../backdrop-portrait-mask";
 import styles from "./transfer-backdrop.module.css";
 
-/** Photo, pixel mask, shade and the four ASCII corners behind the transfer screen. */
+/**
+ * Photo, pixel mask, shade and the four ASCII corners behind the transfer
+ * screen, on a stage the size of the window so it never rescales with the form.
+ */
 export function TransferBackdrop() {
   return (
-    <>
-      <div className={styles.photo} aria-hidden="true">
+    <div className={styles.stage} aria-hidden="true">
+      <div className={styles.photo}>
         <Image
           src="/images/background.png"
           alt=""
@@ -42,6 +45,6 @@ export function TransferBackdrop() {
       <AsciiCorner corner="bottom-left" lines={ASCII_BOTTOM_LEFT} />
       <AsciiCorner corner="top-right" lines={ASCII_TOP_RIGHT} />
       <AsciiCorner corner="bottom-right" lines={ASCII_BOTTOM_RIGHT} />
-    </>
+    </div>
   );
 }
