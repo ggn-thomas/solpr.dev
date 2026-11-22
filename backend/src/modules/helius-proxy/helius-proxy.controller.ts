@@ -20,9 +20,8 @@ export class HeliusProxyController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const body = readBody(request);
-    await parseJsonRpcRequest(body);
-    reply(response, await this.proxy.forwardRpc(body as Buffer));
+    const rpcRequest = await parseJsonRpcRequest(readBody(request));
+    reply(response, await this.proxy.forwardRpc(rpcRequest));
   }
 
   @Get('spr/*path')

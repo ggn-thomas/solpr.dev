@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { Environment } from '../../common/environment.config.js';
+import type { JsonRpcRequestDto } from './dto/json-rpc-request.dto.js';
 import {
   API_KEY_QUERY_PARAM,
   SPR_GATEWAY_PATH,
@@ -26,11 +27,20 @@ export class HeliusProxyService {
   constructor(private readonly config: ConfigService<Environment, true>) {}
 
   /**
-   * Relays an already validated JSON-RPC call to the Helius Solana RPC.
-   * @param body The raw request body, sent on unchanged.
+   * Relays a validated JSON-RPC call to the Helius Solana RPC.
+   * @param request The parsed call. It is serialized again here instead of
+   * relaying the caller's bytes: with a duplicated "method" key, the upstream
+   * parser could read a different method than the one checked against the
+   * allow-list.
    */
-  async forwardRpc(body: Buffer): Promise<UpstreamResponse> {
+  async forwardRpc(request: JsonRpcRequestDto): Promise<UpstreamResponse> {
     const url = this.buildUrl('', new URLSearchParams());
+    const body = JSON.stringify({
+      jsonrpc: request.jsonrpc,
+      id: request.id,
+      method: request.method,
+      params: request.params,
+    });
     return this.send(url, { method: 'POST', headers: JSON_HEADERS, body });
   }
 
