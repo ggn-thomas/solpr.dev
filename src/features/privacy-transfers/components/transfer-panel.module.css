@@ -4,24 +4,16 @@
   gap: var(--space-4);
 }
 
-.helper {
-  margin: 0;
-  font-family: var(--font-sans);
-  font-size: 13px;
-  line-height: 1.45;
-  color: var(--ink-muted);
-}
-
-/* The form is re-mounted on each tab switch and eases in. */
+/* The form is re-mounted on each tab switch and rises in. */
 @media (prefers-reduced-motion: no-preference) {
   @keyframes form-in {
     from {
       opacity: 0;
-      transform: translateY(6px);
+      transform: translateY(14px);
     }
   }
 
   .form {
-    animation: form-in 0.28s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+    animation: form-in 0.3s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
   }
 }

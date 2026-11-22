@@ -1,20 +1,29 @@
 import styles from "./select-button.module.css";
 
-type SelectButtonProps = React.ComponentProps<"button">;
+type SelectButtonProps = React.ComponentProps<"button"> & {
+  /** One character shown in a small outlined square before the value. */
+  badge?: string;
+};
 
-/** A selector trigger: its current value followed by a chevron. */
+/** A selector trigger: an optional badge, the current value, then a chevron. */
 export function SelectButton({
   type = "button",
+  badge,
   className,
   children,
   ...props
 }: SelectButtonProps) {
+  const classes = [styles.select, badge && styles.withBadge, className]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <button
-      type={type}
-      className={[styles.select, className].filter(Boolean).join(" ")}
-      {...props}
-    >
+    <button type={type} className={classes} {...props}>
+      {badge ? (
+        <span className={styles.badge} aria-hidden="true">
+          {badge}
+        </span>
+      ) : null}
       {children}
       <svg
         aria-hidden="true"

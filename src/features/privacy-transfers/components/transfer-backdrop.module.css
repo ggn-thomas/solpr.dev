@@ -25,3 +25,52 @@
     var(--ground) 100%
   );
 }
+
+.landscape {
+  position: absolute;
+  inset: 0;
+}
+
+/* Portrait caps: full width, 12 x 5 cells, so each cell is a square. */
+.cap {
+  display: none;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  aspect-ratio: 12 / 5;
+}
+
+.capTop {
+  top: 0;
+}
+
+.capBottom {
+  bottom: 0;
+}
+
+/*
+ * Portrait and narrow screens: the 3:2 photo would only show its middle strip
+ * and the landscape opening would fall off both sides. The photo fills the
+ * hero instead, between a pixel cap at the top and one at the bottom.
+ */
+@media (max-width: 760px), (max-aspect-ratio: 11 / 10) {
+  .photo {
+    left: 0;
+    width: 100%;
+    aspect-ratio: auto;
+    transform: none;
+  }
+
+  .landscape {
+    display: none;
+  }
+
+  .cap {
+    display: block;
+  }
+
+  .shade {
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+  }
+}

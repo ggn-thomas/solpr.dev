@@ -50,9 +50,26 @@
   padding-bottom: 6px;
 }
 
-@media (max-width: 760px) {
-  .right {
-    display: none;
+/* Portrait and narrow screens: the wedges shrink so they stay in their corner. */
+@media (max-width: 760px), (max-aspect-ratio: 11 / 10) {
+  .ascii {
+    scale: 0.55;
+  }
+
+  .left.top {
+    transform-origin: top left;
+  }
+
+  .left.bottom {
+    transform-origin: bottom left;
+  }
+
+  .right.top {
+    transform-origin: top right;
+  }
+
+  .right.bottom {
+    transform-origin: bottom right;
   }
 }
 

@@ -4,7 +4,14 @@
 
 Private-transfer web app on Solana, powered by Helius **Solana Privacy Rings** (shielded pools: deposit public → private, send privately, withdraw private → public).
 
-**Current phase: frontend only.** We are re-implementing the Claude Design mockup in Next.js + React. No wallet connection, no Privacy API calls, no backend yet. Controls that need them ("Connect wallet", `MAX`, token selector) are rendered but inert. Do not add SDKs, wallet adapters or API routes until asked.
+**Current phase: frontend only.** We are re-implementing the Claude Design mockup in Next.js + React. No Privacy API calls, no backend yet. Tokens, prices and balances are example data (`features/privacy-transfers/mock-tokens.ts`) and the submit button never sends anything. Do not add the Helius SDK or API routes until asked.
+
+**Wallet connection is real**, through Solana Wallet Adapter (`@solana/wallet-adapter-react` + `-base`, `@solana/web3.js` v1, which the adapter requires):
+
+- `providers/wallet-context-provider.tsx` sets up `ConnectionProvider` and `WalletProvider` with `autoConnect`. Read state with `useWallet()` / `useConnection()` from `@solana/wallet-adapter-react`.
+- No legacy adapters and no `@solana/wallet-adapter-wallets`: Wallet Standard wallets (Phantom, Solflare, Backpack...) are detected automatically.
+- No `@solana/wallet-adapter-react-ui`: the picker is our own `features/wallet/components/wallet-dialog.tsx`, opened from anywhere with `useWalletPicker().open()`.
+- RPC endpoint: `NEXT_PUBLIC_SOLANA_RPC_URL` if set, otherwise public devnet.
 
 ## Sources of truth
 
@@ -64,7 +71,7 @@ src/
     helius/server.ts            # Helius SDK instance (import 'server-only')
     helius/client.ts            # fetch calls to /api/helius
     solana/connection.ts        # RPC config pointing at the /api/helius proxy
-  providers/                    # (later) global React contexts, e.g. wallet-context-provider.tsx
+  providers/                    # global React contexts: wallet-context-provider.tsx (Solana Wallet Adapter)
 public/                         # static assets (hero photo)
 ```
 

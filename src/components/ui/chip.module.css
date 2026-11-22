@@ -1,11 +1,21 @@
 .chip {
-  min-height: var(--control-sm);
+  display: flex;
+  align-items: center;
+  min-height: var(--control-md);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.box {
+  display: flex;
+  align-items: center;
+  /* 26px in the mockup; the design system's control-sm (28px) predates it. */
+  min-height: 26px;
   padding: 0 var(--space-2);
   border: 1px solid var(--accent);
-  border-radius: var(--radius-none);
-  background: transparent;
   color: var(--accent);
   font-family: var(--font-mono);
   font-size: 11px;
-  cursor: pointer;
 }

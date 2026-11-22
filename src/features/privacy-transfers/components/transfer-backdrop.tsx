@@ -8,6 +8,10 @@ import {
   ASCII_TOP_RIGHT,
   TRANSFER_MASK,
 } from "../backdrop-data";
+import {
+  PORTRAIT_MASK_BOTTOM,
+  PORTRAIT_MASK_TOP,
+} from "../backdrop-portrait-mask";
 import styles from "./transfer-backdrop.module.css";
 
 /** Photo, pixel mask, shade and the four ASCII corners behind the transfer screen. */
@@ -16,14 +20,22 @@ export function TransferBackdrop() {
     <>
       <div className={styles.photo} aria-hidden="true">
         <Image
-          src="/images/crowd.png"
+          src="/images/background.png"
           alt=""
           fill
           preload
           sizes="1302px"
           className={styles.image}
         />
-        <PixelMask rows={TRANSFER_MASK} />
+        <div className={styles.landscape}>
+          <PixelMask rows={TRANSFER_MASK} />
+        </div>
+        <div className={`${styles.cap} ${styles.capTop}`}>
+          <PixelMask rows={PORTRAIT_MASK_TOP} />
+        </div>
+        <div className={`${styles.cap} ${styles.capBottom}`}>
+          <PixelMask rows={PORTRAIT_MASK_BOTTOM} />
+        </div>
         <div className={styles.shade} />
       </div>
       <AsciiCorner corner="top-left" lines={ASCII_TOP_LEFT} />
