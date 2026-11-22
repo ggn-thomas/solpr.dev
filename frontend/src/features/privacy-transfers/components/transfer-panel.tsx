@@ -127,7 +127,8 @@ export function TransferPanel({ className }: TransferPanelProps) {
   }
 
   return (
-    <Panel className={className}>
+    <>
+      <Panel className={className}>
       <Tabs
         label="Action"
         items={TRANSFER_TABS}
@@ -194,6 +195,8 @@ export function TransferPanel({ className }: TransferPanelProps) {
       >
         {submitLabel}
       </Button>
+      </Panel>
+      {/* Outside the panel: the dialog must not inherit its compact spacing. */}
       {tokensOpen ? (
         <TokenDialog
           tokens={MOCK_TOKENS}
@@ -207,6 +210,6 @@ export function TransferPanel({ className }: TransferPanelProps) {
           onClose={() => setTokensOpen(false)}
         />
       ) : null}
-    </Panel>
+    </>
   );
 }

@@ -22,7 +22,7 @@ type AmountFieldProps = {
   onMax: () => void;
 };
 
-/** Amount entry: value with unit switch, token selector, then balance and MAX below. */
+/** Amount entry: label with balance and MAX, then the value with its unit switch and the token selector. */
 export function AmountField({
   id,
   label,
@@ -40,7 +40,19 @@ export function AmountField({
 }: AmountFieldProps) {
   return (
     <div className={styles.group}>
-      <Label htmlFor={id}>{label}</Label>
+      <div className={styles.head}>
+        <Label htmlFor={id}>{label}</Label>
+        <span className={styles.balanceRow}>
+          <span
+            className={`${styles.balance} ${exceedsBalance ? styles.balanceOver : ""}`}
+          >
+            {balanceLabel}
+          </span>
+          <Chip aria-label="Use maximum amount" onClick={onMax}>
+            MAX
+          </Chip>
+        </span>
+      </div>
       <div className={`${styles.field} ${exceedsBalance ? styles.over : ""}`}>
         <div className={styles.entry}>
           <div className={styles.inputRow}>
@@ -86,18 +98,6 @@ export function AmountField({
         >
           {tokenSymbol}
         </SelectButton>
-      </div>
-      <div className={styles.meta}>
-        <span className={styles.balanceRow}>
-          <span
-            className={`${styles.balance} ${exceedsBalance ? styles.balanceOver : ""}`}
-          >
-            {balanceLabel}
-          </span>
-          <Chip aria-label="Use maximum amount" onClick={onMax}>
-            MAX
-          </Chip>
-        </span>
       </div>
     </div>
   );

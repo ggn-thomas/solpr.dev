@@ -26,16 +26,17 @@ export default function TransferPage() {
         <h1 className={`${styles.headline} ${styles.rise} ${styles.d2}`}>
           Send [privately.]
         </h1>
-        <TransferPanel className={`${styles.rise} ${styles.d3}`} />
-        <div className={styles.footer}>
-          <nav className={styles.resources} aria-label="Resources">
-            {RESOURCES.map((link) => (
-              <a key={link.label} href={link.href}>
-                {link.label}
-              </a>
-            ))}
-          </nav>
-        </div>
+        <TransferPanel
+          className={`${styles.panel} ${styles.rise} ${styles.d3}`}
+        />
+        <div className={styles.bottomSpacer} aria-hidden="true" />
+        <nav className={styles.resources} aria-label="Resources">
+          {RESOURCES.map((link) => (
+            <a key={link.label} href={link.href}>
+              {link.label}
+            </a>
+          ))}
+        </nav>
       </div>
     </section>
   );

@@ -18,6 +18,19 @@
   gap: var(--space-7);
 }
 
+/*
+ * A compact panel on this screen only: narrower than the design system's
+ * panel-width (480px) and tighter spacing, by overriding the tokens for its
+ * subtree. Controls keep their 44px minimum (control-md).
+ */
+.content .panel {
+  max-width: 380px;
+  --space-5: 14px;
+  --space-4: 10px;
+  --field-height: 50px;
+  --control-lg: 46px;
+}
+
 .spacer {
   flex: 1 1 0;
 }
@@ -40,19 +53,27 @@
   text-align: center;
 }
 
-.footer {
-  /* Twice the top spacer: lifts the panel to the middle of the window. */
+/*
+ * Twice the top spacer: lifts the panel to the middle of the window. Never
+ * shorter than the pinned resources bar, so the panel never slides under it.
+ */
+.bottomSpacer {
   flex: 2 1 0;
-  display: flex;
-  align-items: flex-end;
+  min-height: calc(var(--control-md) + var(--space-5));
 }
 
+/* Pinned to the bottom of the window, whatever the page scroll. */
 .resources {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  padding-bottom: var(--space-2);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 0 var(--space-2);
-  padding: 0 10px;
   font-family: var(--font-mono);
   font-size: 14px;
 }

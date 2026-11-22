@@ -2,7 +2,7 @@ import styles from "./chip.module.css";
 
 type ChipProps = React.ComponentProps<"button">;
 
-/** Small outlined action, e.g. MAX. The visible box is 26px; the hit area is 44px. */
+/** Small outlined action, e.g. MAX. The visible box is 26px; the hit area is 44px without taking layout space. */
 export function Chip({
   type = "button",
   className,
