@@ -16,7 +16,7 @@ case "$BASENAME" in
 esac
 
 # 2. Block protected path patterns
-PROTECTED_PATTERNS=(".env" "package-lock.json" "pnpm-lock.yaml" "yarn.lock" ".git/" "/dist/" "/node_modules/")
+PROTECTED_PATTERNS=(".env" "package-lock.json" "pnpm-lock.yaml" "yarn.lock" ".git/" "/dist/" "/.next/" "/node_modules/")
 
 for pattern in "${PROTECTED_PATTERNS[@]}"; do
   if [[ "$FILE_PATH" == *"$pattern"* ]]; then

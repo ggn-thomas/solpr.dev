@@ -1,10 +1,17 @@
-@AGENTS.md
+@frontend/AGENTS.md
 
 # solpr.dev
 
 Private-transfer web app on Solana, powered by Helius **Solana Privacy Rings** (shielded pools: deposit public → private, send privately, withdraw private → public).
 
-**Current phase: frontend only.** We are re-implementing the Claude Design mockup in Next.js + React. No wallet connection, no Privacy API calls, no backend yet. Controls that need them ("Connect wallet", `MAX`, token selector) are rendered but inert. Do not add SDKs, wallet adapters or API routes until asked.
+**Current phase: frontend only.** We are re-implementing the Claude Design mockup in Next.js + React. No Privacy API calls, no backend yet. Tokens, prices and balances are example data (`features/privacy-transfers/mock-tokens.ts`) and the submit button never sends anything. Do not add the Helius SDK or API routes until asked.
+
+**Wallet connection is real**, through Solana Wallet Adapter (`@solana/wallet-adapter-react` + `-base`, `@solana/web3.js` v1, which the adapter requires):
+
+- `providers/wallet-context-provider.tsx` sets up `ConnectionProvider` and `WalletProvider` with `autoConnect`. Read state with `useWallet()` / `useConnection()` from `@solana/wallet-adapter-react`.
+- No legacy adapters and no `@solana/wallet-adapter-wallets`: Wallet Standard wallets (Phantom, Solflare, Backpack...) are detected automatically.
+- No `@solana/wallet-adapter-react-ui`: the picker is our own `features/wallet/components/wallet-dialog.tsx`, opened from anywhere with `useWalletPicker().open()`.
+- RPC endpoint: `NEXT_PUBLIC_SOLANA_RPC_URL` if set, otherwise public devnet.
 
 ## Sources of truth
 
@@ -17,15 +24,40 @@ Private-transfer web app on Solana, powered by Helius **Solana Privacy Rings** (
 
 Only the **private transfer** screen is in scope for now. The landing page comes later.
 
+## Repository layout
+
+Two independent packages, each with its own `package.json`, lockfile and `node_modules`. Run commands from inside the package.
+
+```
+frontend/   # Next.js app (everything described under "Stack" and "Project structure")
+backend/    # NestJS service: relays Helius calls so the API key stays server-side
+```
+
 ## Commands
 
 ```bash
-pnpm dev      # dev server
+# frontend/
+pnpm dev      # dev server on :3000
 pnpm build    # production build (also type-checks)
 pnpm lint     # eslint
+
+# backend/
+pnpm start:dev   # watch mode on :4000
+pnpm build       # nest build
+pnpm typecheck && pnpm lint
 ```
 
 Package manager is **pnpm**. Do not use npm or yarn.
+
+## Backend
+
+Follows `.claude/skills/code-quality-backend/SKILL.md` (NestJS, strict TypeScript, no `any`, functions <= 30 lines, files <= 300 lines, nesting <= 2, early returns, role-suffixed kebab-case files, JSDoc on public methods, Nest `Logger`, `/api/v1/` prefix). The limits are enforced by `backend/eslint.config.mjs`. NestJS 12 is ESM: relative imports end in `.js`.
+
+- Only module so far: `src/modules/helius-proxy`. `POST /api/v1/helius/rpc` relays allow-listed Solana JSON-RPC methods; `GET|POST /api/v1/helius/spr/*` relays the Privacy Rings indexer and prover untouched (the `Spr-Tee*` headers must cross as is).
+- It never sees user keys or the derivation signature, and stores nothing. Never log request bodies or the upstream URL (it carries the key).
+- The skill's "no live RPC in the public API" rule targets the future `analytics` module; the proxy is the one place allowed to call Helius live.
+- Config in `backend/.env` (see `.env.example`): `HELIUS_API_KEY` (required), `HELIUS_RPC_URL`, `FRONTEND_ORIGIN`, `PORT`.
+- The post-edit hook (`.claude/hooks/post-edit-quality.sh`) runs Prettier, ESLint and `tsc` in the package that owns the edited file, so backend files are checked with the backend's config and frontend files with the frontend's.
 
 ## Stack
 
@@ -34,7 +66,7 @@ Package manager is **pnpm**. Do not use npm or yarn.
 - Fonts: `next/font/google` (Oxanium, Space Mono, Inter), exposed as CSS variables
 - Images: `next/image`, files in `public/`
 
-## Project structure
+## Project structure (frontend/)
 
 Feature-based layout on top of the Next.js App Router conventions. `app/` routes, `features/` owns business domains, `components/` is generic UI, `lib/` is configuration and external clients, `providers/` is global React context.
 
@@ -46,9 +78,6 @@ src/
     (app)/                      # route group: product screens
       layout.tsx                # app shell, fills the viewport (header; WalletProvider later)
       page.tsx                  # "/" is the private transfer screen, the main page
-    api/                        # (later) Route Handlers
-      helius/route.ts           # secure proxy to the Helius SDK (API key stays server-side)
-      webhooks/helius/route.ts  # Helius on-chain event webhooks
   features/                     # business logic split by domain
     privacy-transfers/
       components/               # UI used only by this feature
@@ -60,11 +89,8 @@ src/
     ui/                         # design-system components: button, tabs, panel, field, chip, select-button
     layout/                     # shell pieces: header
     decor/                      # brand motifs: pixel-mask, ascii-corner
-  lib/                          # (later) configuration and external clients
-    helius/server.ts            # Helius SDK instance (import 'server-only')
-    helius/client.ts            # fetch calls to /api/helius
-    solana/connection.ts        # RPC config pointing at the /api/helius proxy
-  providers/                    # (later) global React contexts, e.g. wallet-context-provider.tsx
+  lib/                          # (later) configuration and external clients, e.g. the Privacy SDK client pointed at the backend
+  providers/                    # global React contexts: wallet-context-provider.tsx (Solana Wallet Adapter)
 public/                         # static assets (hero photo)
 ```
 
@@ -75,7 +101,7 @@ Rules:
 - `app/` is for routing. Only Next special files (`page`, `layout`, `loading`, `error`, `not-found`, `route`, `template`, `default`, metadata files) and a `page.module.css` beside a page go there. Pages compose feature components; they hold no business logic.
 - A feature never imports from another feature's internals. Shared pieces move to `components/` or `lib/`.
 - `components/ui` knows nothing about Solana, Helius or wallets: props in, markup out.
-- The Helius API key never reaches the browser: client code calls `/api/helius`, only `lib/helius/server.ts` touches the SDK.
+- The Helius API key never reaches the browser: client code calls the backend's `/api/v1/helius/*` routes.
 - Import with the `@/*` alias (`@/components/ui/button`), never long relative paths across folders.
 - **File names are kebab-case** everywhere in `src/` (enforced by `.claude/hooks/pre-edit-guard.sh`): `transfer-panel.tsx` exports `TransferPanel`, with `transfer-panel.module.css` beside it. One component per file. Named exports for components; default exports only where Next requires them (`page`, `layout`).
 - **Server Components by default.** Add `"use client"` only on the smallest component that needs state, effects or event handlers, and keep it a leaf.

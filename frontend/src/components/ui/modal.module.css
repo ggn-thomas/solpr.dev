@@ -1,0 +1,79 @@
+.dialog {
+  box-sizing: border-box;
+  width: calc(100% - 2 * var(--page-inset));
+  max-width: var(--panel-width);
+  min-height: 520px;
+  max-height: calc(100dvh - 80px);
+  padding: 0;
+  overflow-y: auto;
+  background: var(--ground);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-none);
+  color: var(--ink);
+}
+
+.dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+}
+
+/* Padding lives here so a click on the dialog element itself means the backdrop. */
+.body {
+  box-sizing: border-box;
+  min-height: 518px;
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+.close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-md);
+  height: var(--control-md);
+  padding: 0;
+  background: var(--surface-raised);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes dialog-rise {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+  }
+
+  @keyframes backdrop-fade {
+    from {
+      opacity: 0;
+    }
+  }
+
+  .dialog {
+    animation: dialog-rise 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .dialog::backdrop {
+    animation: backdrop-fade 0.18s ease-out;
+  }
+}

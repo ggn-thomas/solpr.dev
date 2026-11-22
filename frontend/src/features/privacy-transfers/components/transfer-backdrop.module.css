@@ -1,0 +1,76 @@
+/* The photo keeps its 3:2 ratio at the full height of the hero, centred. */
+.photo {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 100%;
+  aspect-ratio: 3 / 2;
+  transform: translateX(-50%);
+}
+
+.image {
+  object-fit: cover;
+}
+
+/* Darkens the photo and fades its left and right edges into the ground. */
+.shade {
+  position: absolute;
+  /* 1px wider than the photo so no sub-pixel edge of it shows. */
+  inset: 0 -1px;
+  background: linear-gradient(
+    to right,
+    var(--ground) 0%,
+    rgba(0, 0, 0, 0.45) 24%,
+    rgba(0, 0, 0, 0.45) 76%,
+    var(--ground) 100%
+  );
+}
+
+.landscape {
+  position: absolute;
+  inset: 0;
+}
+
+/* Portrait caps: full width, 12 x 5 cells, so each cell is a square. */
+.cap {
+  display: none;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  aspect-ratio: 12 / 5;
+}
+
+.capTop {
+  top: 0;
+}
+
+.capBottom {
+  bottom: 0;
+}
+
+/*
+ * Portrait and narrow screens: the 3:2 photo would only show its middle strip
+ * and the landscape opening would fall off both sides. The photo fills the
+ * hero instead, between a pixel cap at the top and one at the bottom.
+ */
+@media (max-width: 760px), (max-aspect-ratio: 11 / 10) {
+  .photo {
+    left: 0;
+    width: 100%;
+    aspect-ratio: auto;
+    transform: none;
+  }
+
+  .landscape {
+    display: none;
+  }
+
+  .cap {
+    display: block;
+  }
+
+  .shade {
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+  }
+}
