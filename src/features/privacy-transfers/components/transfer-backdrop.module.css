@@ -1,0 +1,27 @@
+/* The photo keeps its 3:2 ratio at the full height of the hero, centred. */
+.photo {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 100%;
+  aspect-ratio: 3 / 2;
+  transform: translateX(-50%);
+}
+
+.image {
+  object-fit: cover;
+}
+
+/* Darkens the photo and fades its left and right edges into the ground. */
+.shade {
+  position: absolute;
+  /* 1px wider than the photo so no sub-pixel edge of it shows. */
+  inset: 0 -1px;
+  background: linear-gradient(
+    to right,
+    var(--ground) 0%,
+    rgba(0, 0, 0, 0.45) 24%,
+    rgba(0, 0, 0, 0.45) 76%,
+    var(--ground) 100%
+  );
+}
