@@ -3,23 +3,34 @@ import styles from "./select-button.module.css";
 type SelectButtonProps = React.ComponentProps<"button"> & {
   /** One character shown in a small outlined square before the value. */
   badge?: string;
+  /** An image shown before the value, in place of the badge. */
+  icon?: React.ReactNode;
 };
 
-/** A selector trigger: an optional badge, the current value, then a chevron. */
+/** A selector trigger: an optional icon or badge, the current value, then a chevron. */
 export function SelectButton({
   type = "button",
   badge,
+  icon,
   className,
   children,
   ...props
 }: SelectButtonProps) {
-  const classes = [styles.select, badge && styles.withBadge, className]
+  const classes = [
+    styles.select,
+    (badge || icon) && styles.withBadge,
+    className,
+  ]
     .filter(Boolean)
     .join(" ");
 
   return (
     <button type={type} className={classes} {...props}>
-      {badge ? (
+      {icon ? (
+        <span className={styles.icon} aria-hidden="true">
+          {icon}
+        </span>
+      ) : badge ? (
         <span className={styles.badge} aria-hidden="true">
           {badge}
         </span>

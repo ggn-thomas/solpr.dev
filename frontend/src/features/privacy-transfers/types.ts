@@ -10,4 +10,6 @@ export type Token = {
   /** Price of one token in US dollars. */
   price: number;
   balances: Record<BalanceSide, number>;
+  /** Logo in public/, shown instead of the letter badge. */
+  icon?: string;
 };

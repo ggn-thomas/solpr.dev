@@ -1,0 +1,40 @@
+.label {
+  display: flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 14px;
+  color: var(--accent);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.rule {
+  width: var(--data-label-line, 96px);
+  height: 1px;
+  background: var(--accent);
+}
+
+/* The tag sits on ground so it stays readable over the photo. */
+.tag {
+  background: var(--ground);
+  padding: 1px 6px;
+}
+
+.right {
+  flex-direction: row-reverse;
+}
+
+.above {
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.above .rule {
+  align-self: stretch;
+  width: auto;
+  height: 7px;
+  background: none;
+  border: 1px solid var(--accent);
+  border-top: 0;
+}

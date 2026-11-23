@@ -1,0 +1,32 @@
+/*
+ * The visible area under the header, not the whole page: the rings stay
+ * centred in the window and do not move when the form changes height.
+ */
+.stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: calc(100svh - var(--header-height));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/*
+ * Discreet: the accent at low opacity, sized so the 76 rows span about the
+ * height of the window (the rings themselves fill the middle half).
+ */
+.grid {
+  flex: none;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: clamp(8px, calc((100svh - var(--header-height)) / 64), 16px);
+  line-height: 1;
+  white-space: pre;
+  color: var(--accent);
+  opacity: 0.18;
+  user-select: none;
+}

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { TransferBackdrop } from "@/features/privacy-transfers/components/transfer-backdrop";
+import { RingField } from "@/components/decor/ring-field";
 import { TransferPanel } from "@/features/privacy-transfers/components/transfer-panel";
 import styles from "./page.module.css";
 
@@ -17,7 +17,7 @@ const RESOURCES = [
 export default function TransferPage() {
   return (
     <section className={styles.hero}>
-      <TransferBackdrop />
+      <RingField />
       <div className={styles.content}>
         <div className={styles.spacer} aria-hidden="true" />
         <p className={`${styles.eyebrow} ${styles.rise} ${styles.d1}`}>

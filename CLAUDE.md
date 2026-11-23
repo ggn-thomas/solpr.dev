@@ -4,7 +4,7 @@
 
 Private-transfer web app on Solana, powered by Helius **Solana Privacy Rings** (shielded pools: deposit public → private, send privately, withdraw private → public).
 
-**Current phase: frontend only.** We are re-implementing the Claude Design mockup in Next.js + React. No Privacy API calls, no backend yet. Tokens, prices and balances are example data (`features/privacy-transfers/mock-tokens.ts`) and the submit button never sends anything. Do not add the Helius SDK or API routes until asked.
+**Status: archived.** The project stopped before the Helius Privacy integration. The repository keeps the web interface as a record: the landing page and the private transfer screen, both from the Claude Design mockup. Nothing talks to Helius: tokens, prices and balances are example data (`features/privacy-transfers/mock-tokens.ts`) and the submit button never sends anything. A NestJS proxy backend for the Helius API key existed and was removed; it is in the git history (commit `86fa168`) if the integration is ever resumed.
 
 **Wallet connection is real**, through Solana Wallet Adapter (`@solana/wallet-adapter-react` + `-base`, `@solana/web3.js` v1, which the adapter requires):
 
@@ -22,16 +22,11 @@ Private-transfer web app on Solana, powered by Helius **Solana Privacy Rings** (
 | Product context | https://www.helius.dev/privacy, docs at https://www.helius.dev/docs/privacy |
 | Next.js docs for the installed version | `node_modules/next/dist/docs/` (read before using an API; this is Next 16) |
 
-Only the **private transfer** screen is in scope for now. The landing page comes later.
+Routes: `/` is the landing page, `/app` the private transfer screen. The mockup also has a "Loading" screen (`Loader.dc.html`) that was not built.
 
 ## Repository layout
 
-Two independent packages, each with its own `package.json`, lockfile and `node_modules`. Run commands from inside the package.
-
-```
-frontend/   # Next.js app (everything described under "Stack" and "Project structure")
-backend/    # NestJS service: relays Helius calls so the API key stays server-side
-```
+The app lives in `frontend/`, its own pnpm package. Run every command from there.
 
 ## Commands
 
@@ -40,24 +35,11 @@ backend/    # NestJS service: relays Helius calls so the API key stays server-si
 pnpm dev      # dev server on :3000
 pnpm build    # production build (also type-checks)
 pnpm lint     # eslint
-
-# backend/
-pnpm start:dev   # watch mode on :4000
-pnpm build       # nest build
-pnpm typecheck && pnpm lint
 ```
 
 Package manager is **pnpm**. Do not use npm or yarn.
 
-## Backend
-
-Follows `.claude/skills/code-quality-backend/SKILL.md` (NestJS, strict TypeScript, no `any`, functions <= 30 lines, files <= 300 lines, nesting <= 2, early returns, role-suffixed kebab-case files, JSDoc on public methods, Nest `Logger`, `/api/v1/` prefix). The limits are enforced by `backend/eslint.config.mjs`. NestJS 12 is ESM: relative imports end in `.js`.
-
-- Only module so far: `src/modules/helius-proxy`. `POST /api/v1/helius/rpc` relays allow-listed Solana JSON-RPC methods; `GET|POST /api/v1/helius/spr/*` relays the Privacy Rings indexer and prover untouched (the `Spr-Tee*` headers must cross as is).
-- It never sees user keys or the derivation signature, and stores nothing. Never log request bodies or the upstream URL (it carries the key).
-- The skill's "no live RPC in the public API" rule targets the future `analytics` module; the proxy is the one place allowed to call Helius live.
-- Config in `backend/.env` (see `.env.example`): `HELIUS_API_KEY` (required), `HELIUS_RPC_URL`, `FRONTEND_ORIGIN`, `PORT`.
-- The post-edit hook (`.claude/hooks/post-edit-quality.sh`) runs Prettier, ESLint and `tsc` in the package that owns the edited file, so backend files are checked with the backend's config and frontend files with the frontend's.
+The post-edit hook (`.claude/hooks/post-edit-quality.sh`) runs Prettier, ESLint and `tsc` in the package that owns the edited file.
 
 ## Stack
 
@@ -68,17 +50,22 @@ Follows `.claude/skills/code-quality-backend/SKILL.md` (NestJS, strict TypeScrip
 
 ## Project structure (frontend/)
 
-Feature-based layout on top of the Next.js App Router conventions. `app/` routes, `features/` owns business domains, `components/` is generic UI, `lib/` is configuration and external clients, `providers/` is global React context.
+Feature-based layout on top of the Next.js App Router conventions. `app/` routes, `features/` owns business domains, `components/` is generic UI, `providers/` is global React context.
 
 ```
 src/
-  app/                          # routing and backend endpoints only
+  app/                          # routing only
     layout.tsx                  # root layout: <html>, fonts, metadata
     globals.css                 # tokens (CSS variables) + base reset only
+    (marketing)/                # route group: landing page
+      layout.tsx                # shell with the bracketed nav and "Launch app"
+      page.tsx                  # "/" landing hero
     (app)/                      # route group: product screens
-      layout.tsx                # app shell, fills the viewport (header; WalletProvider later)
-      page.tsx                  # "/" is the private transfer screen, the main page
+      layout.tsx                # wallet providers + shell with the wallet controls
+      app/page.tsx              # "/app" private transfer screen
   features/                     # business logic split by domain
+    landing/
+      components/               # landing backdrop (photo, mask, data labels, ASCII)
     privacy-transfers/
       components/               # UI used only by this feature
       hooks/                    # (later) e.g. use-private-transfer.ts
@@ -86,22 +73,20 @@ src/
     wallet/
       components/               # connect button, network selector
   components/                   # generic, shared UI
-    ui/                         # design-system components: button, tabs, panel, field, chip, select-button
-    layout/                     # shell pieces: header
-    decor/                      # brand motifs: pixel-mask, ascii-corner
-  lib/                          # (later) configuration and external clients, e.g. the Privacy SDK client pointed at the backend
+    ui/                         # design-system components: button, button-link, tabs, panel, field, chip, select-button, modal
+    layout/                     # shell pieces: header, page-shell
+    decor/                      # brand motifs: pixel-mask, ascii-corner, data-label
   providers/                    # global React contexts: wallet-context-provider.tsx (Solana Wallet Adapter)
 public/                         # static assets (hero photo)
 ```
 
-Entries marked "(later)" are the agreed target and do not exist yet: create them when the backend and wallet phases start, not before. No empty placeholder folders.
+Entries marked "(later)" were planned for the Helius integration and do not exist. No empty placeholder folders.
 
 Rules:
 
 - `app/` is for routing. Only Next special files (`page`, `layout`, `loading`, `error`, `not-found`, `route`, `template`, `default`, metadata files) and a `page.module.css` beside a page go there. Pages compose feature components; they hold no business logic.
-- A feature never imports from another feature's internals. Shared pieces move to `components/` or `lib/`.
+- A feature never imports from another feature's internals. Shared pieces move to `components/`.
 - `components/ui` knows nothing about Solana, Helius or wallets: props in, markup out.
-- The Helius API key never reaches the browser: client code calls the backend's `/api/v1/helius/*` routes.
 - Import with the `@/*` alias (`@/components/ui/button`), never long relative paths across folders.
 - **File names are kebab-case** everywhere in `src/` (enforced by `.claude/hooks/pre-edit-guard.sh`): `transfer-panel.tsx` exports `TransferPanel`, with `transfer-panel.module.css` beside it. One component per file. Named exports for components; default exports only where Next requires them (`page`, `layout`).
 - **Server Components by default.** Add `"use client"` only on the smallest component that needs state, effects or event handlers, and keep it a leaf.

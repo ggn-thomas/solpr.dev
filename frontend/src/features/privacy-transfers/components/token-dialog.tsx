@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { Field } from "@/components/ui/field";
 import { Label } from "@/components/ui/label";
@@ -59,9 +60,19 @@ export function TokenDialog({
             aria-pressed={token.symbol === selectedSymbol}
             onClick={() => onSelect(token.symbol)}
           >
-            <span className={styles.badge} aria-hidden="true">
-              {token.symbol.charAt(0)}
-            </span>
+            {token.icon ? (
+              <Image
+                className={styles.logo}
+                src={token.icon}
+                alt=""
+                width={36}
+                height={36}
+              />
+            ) : (
+              <span className={styles.badge} aria-hidden="true">
+                {token.symbol.charAt(0)}
+              </span>
+            )}
             <span className={styles.identity}>
               <span className={styles.name}>{token.name}</span>
               <span className={styles.sub}>

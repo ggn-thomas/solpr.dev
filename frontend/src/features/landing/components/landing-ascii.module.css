@@ -1,0 +1,8 @@
+/* Fills the hero, so the corners sit in the corners of the page, above the photo and under the copy. */
+.stage {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}

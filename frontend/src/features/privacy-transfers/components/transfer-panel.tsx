@@ -155,6 +155,7 @@ export function TransferPanel({ className }: TransferPanelProps) {
             }
             onSwitchUnit={switchUnit}
             tokenSymbol={token.symbol}
+            tokenIcon={token.icon}
             onOpenTokens={() => setTokensOpen(true)}
             balanceLabel={
               connected

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Chip } from "@/components/ui/chip";
 import { Label } from "@/components/ui/label";
 import { SelectButton } from "@/components/ui/select-button";
@@ -15,6 +16,8 @@ type AmountFieldProps = {
   unitSwitchLabel: string;
   onSwitchUnit: () => void;
   tokenSymbol: string;
+  /** Token logo; without it the selector shows the symbol's first letter. */
+  tokenIcon?: string;
   onOpenTokens: () => void;
   balanceLabel: string;
   /** The amount is above the balance: border and balance turn accent. */
@@ -33,6 +36,7 @@ export function AmountField({
   unitSwitchLabel,
   onSwitchUnit,
   tokenSymbol,
+  tokenIcon,
   onOpenTokens,
   balanceLabel,
   exceedsBalance,
@@ -93,6 +97,11 @@ export function AmountField({
         </div>
         <SelectButton
           badge={tokenSymbol.charAt(0)}
+          icon={
+            tokenIcon ? (
+              <Image src={tokenIcon} alt="" width={22} height={22} />
+            ) : undefined
+          }
           aria-haspopup="dialog"
           onClick={onOpenTokens}
         >

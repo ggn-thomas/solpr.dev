@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import styles from "./wallet-menu.module.css";
 
@@ -68,12 +69,13 @@ export function WalletMenu({
         aria-expanded={open}
         onClick={() => setOpen((current) => !current)}
       >
-        <span className={styles.avatar} aria-hidden="true">
-          <span />
-          <span />
-          <span />
-          <span />
-        </span>
+        <Image
+          className={styles.avatar}
+          src="/images/sol.png"
+          alt=""
+          width={22}
+          height={22}
+        />
         <span title={address}>{shortenAddress(address)}</span>
         <svg
           className={styles.chevron}

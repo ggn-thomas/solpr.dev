@@ -8,6 +8,7 @@ export const MOCK_TOKENS: readonly Token[] = [
   {
     symbol: "SOL",
     name: "Solana",
+    icon: "/images/sol.png",
     price: 70.27,
     balances: { public: 0.0814, private: 0.05 },
   },

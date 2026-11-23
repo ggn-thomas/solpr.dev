@@ -19,6 +19,18 @@
   filter: brightness(1.12);
 }
 
+/* A ButtonLink keeps its button colours over the global a / a:hover rules. */
+.link,
+.link:hover {
+  color: var(--ground);
+  text-decoration: none;
+}
+
+.link.secondary,
+.link.secondary:hover {
+  color: var(--accent);
+}
+
 .secondary {
   background: var(--surface-raised);
   color: var(--accent);
@@ -59,4 +71,34 @@
       border-color 0.18s ease,
       color 0.18s ease;
   }
+}
+
+/*
+ * Dashed outline: long dashes with square corner brackets, the gaps showing
+ * the page behind. Each edge is one tile (dash, gap, dash) repeated with
+ * "round", so every edge starts and ends on a dash and the corners close.
+ */
+.dashed {
+  --dash-color: var(--accent);
+  --dash-fill: var(--accent);
+  --dash-width: 2px;
+  --dash-tile: 64px;
+  --dash-pattern:
+    var(--dash-color) 0 26px, transparent 26px 38px, var(--dash-color) 38px 64px;
+  border: var(--dash-width) solid transparent;
+  background:
+    linear-gradient(90deg, var(--dash-pattern)) left top / var(--dash-tile)
+      var(--dash-width) round no-repeat border-box,
+    linear-gradient(90deg, var(--dash-pattern)) left bottom / var(--dash-tile)
+      var(--dash-width) round no-repeat border-box,
+    linear-gradient(180deg, var(--dash-pattern)) left top / var(--dash-width)
+      var(--dash-tile) no-repeat round border-box,
+    linear-gradient(180deg, var(--dash-pattern)) right top / var(--dash-width)
+      var(--dash-tile) no-repeat round border-box,
+    linear-gradient(var(--dash-fill), var(--dash-fill)) padding-box;
+}
+
+.dashed.secondary {
+  --dash-color: var(--accent-border);
+  --dash-fill: var(--surface-raised);
 }

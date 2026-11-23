@@ -3,8 +3,9 @@
   display: flex;
   flex-direction: column;
   font-family: var(--font-mono);
-  font-size: 10px;
-  line-height: 10px;
+  /* A page can scale the wedges with --ascii-size. */
+  font-size: var(--ascii-size, 10px);
+  line-height: var(--ascii-size, 10px);
   color: var(--accent-rule);
   white-space: nowrap;
   pointer-events: none;

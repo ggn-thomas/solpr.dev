@@ -1,0 +1,170 @@
+.hero {
+  position: relative;
+  overflow: hidden;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+ * Fills the hero. Wide screens: the copy, vertically centred on the left
+ * third, with the photo behind it. Phones: copy then photo, centred together.
+ */
+.layout {
+  position: relative;
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  padding: 96px var(--page-inset) 72px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Above the photo and the ASCII corners. */
+.copy {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.headline {
+  margin: 0;
+  max-width: 13em;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(30px, 3.7vw, 56px);
+  line-height: 1.1;
+}
+
+.line {
+  display: block;
+}
+
+.lead {
+  margin: 0;
+  max-width: 30em;
+  font-size: clamp(17px, 1.6vw, 23px);
+  line-height: 1.3;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  margin-top: var(--space-3);
+}
+
+/* The hero buttons are a little taller than the 44px minimum. */
+.cta {
+  min-height: 48px;
+}
+
+/*
+ * Wider screens: the whole composition keeps the mockup's proportions. --u is
+ * one mockup pixel: the 1440 x 868 hero of the mockup scaled to fit the hero's
+ * width (container units, so a scrollbar is accounted for) and the window
+ * height under the header, and centred. Every size below is a
+ * multiple of it, so text, buttons, photo and ASCII grow and shrink together.
+ * The ASCII corners stay in the corners of the page, outside that frame, at
+ * the same scale. The header is shared with the app and keeps its fixed size.
+ */
+@media (min-width: 761px) {
+  .hero {
+    /* The frame's unit, from the window (the hero cannot query itself). */
+    --ascii-size: calc(
+      10 * min(100vw / 1440, (100svh - var(--header-height)) / 868)
+    );
+    container-type: inline-size;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .layout {
+    --u: min(100cqw / 1440, (100svh - var(--header-height)) / 868);
+    flex: none;
+    width: calc(1440 * var(--u));
+    height: calc(868 * var(--u));
+    padding: calc(96 * var(--u)) calc(57.6 * var(--u)) calc(72 * var(--u));
+  }
+
+  .copy {
+    gap: calc(28 * var(--u));
+  }
+
+  .eyebrow {
+    font-size: calc(13 * var(--u));
+  }
+
+  /* 3.7vw at the mockup's 1440px width. */
+  .headline {
+    font-size: calc(53.28 * var(--u));
+  }
+
+  .lead {
+    font-size: calc(23 * var(--u));
+  }
+
+  .actions {
+    gap: calc(20 * var(--u));
+    margin-top: calc(12 * var(--u));
+  }
+
+  .cta {
+    min-height: calc(48 * var(--u));
+    padding: 0 calc(26 * var(--u));
+    font-size: calc(17 * var(--u));
+  }
+}
+
+/* Phones: copy then photo (see landing-photo), the pair centred in the hero. */
+@media (max-width: 760px) {
+  .hero {
+    --landing-photo-height: 34svh;
+  }
+
+  .layout {
+    gap: var(--space-7);
+    padding: var(--space-7) var(--page-inset);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+  }
+
+  .rise {
+    animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  }
+
+  .d1 {
+    animation-delay: 0.05s;
+  }
+
+  .d2 {
+    animation-delay: 0.15s;
+  }
+
+  .d3 {
+    animation-delay: 0.3s;
+  }
+
+  .d4 {
+    animation-delay: 0.45s;
+  }
+}
